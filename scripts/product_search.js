@@ -32,6 +32,9 @@ async function generateTableBody(event, tbody) {
 
             displayProducts(tbody, data);
         }
+
+        // do all the hide/show logic after the work's been done
+        hideAndSeek(dropdown, dropdownLength, dropdownValue);
     } catch (error) {
         console.log(error);
     }
@@ -86,4 +89,40 @@ function createCell(row, product, key) {
 function createHyperlink(row, product) {
     const newCell = row.insertCell();
     newCell.innerHTML = `<a href="./product_details.html?productId=${product.productId}">Show Details</a>`;
+}
+
+function hideAndSeek(dropdown, length, value) {
+    // if value exists (i.e, not "")...
+    if (value) {
+        // QUESTION: is .classList.add("d-none") or .style.display = "none" better?
+
+        // if the dropdown is categoryDDL
+        if (length > 3) {
+            document.querySelector("#productTable").classList.remove("d-none");
+
+            // if the dropdown is productSearchDDL
+        } else {
+            switch (value) {
+                case "all":
+                    document.querySelector("#categoryDDL").classList.add("d-none");
+                    document.querySelector("#productTable").classList.remove("d-none");
+                    break;
+                case "category":
+                    document.querySelector("#productTable").classList.add("d-none");
+
+                    // when I show the categoryDDL again, don't remember the previously selected option
+                    document.querySelector("#categoryDDL").selectedIndex = 0;
+                    document.querySelector("#categoryDDL").classList.remove("d-none");
+                    break;
+            }
+        }
+    } else {
+        // if dropdown.value === "", ALWAYS HIDE THE TABLE
+        document.querySelector("#productTable").classList.add("d-none");
+
+        // ONLY if the productSearchDDL value is "", ALSO hide the categoryDDL
+        if (length <= 3) {
+            document.querySelector("#categoryDDL").classList.add("d-none");
+        }
+    }
 }
