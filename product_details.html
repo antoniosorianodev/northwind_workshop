@@ -11,7 +11,48 @@
 
 <body>
 
+    <nav data-bs-theme="dark" class="navbar navbar-expand-lg bg-body-tertiary">
+        <div class="container-fluid">
+            <a class="navbar-brand" href="#">Northwind Grocery</a>
+            <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbarNav"
+                aria-controls="navbarNav" aria-expanded="false" aria-label="Toggle navigation">
+                <span class="navbar-toggler-icon"></span>
+            </button>
+            <div class="collapse navbar-collapse" id="navbarNav">
+                <ul class="navbar-nav">
+                    <li class="nav-item">
+                        <a class="nav-link" href="./index.html">Home</a>
+                    </li>
+                    <li class="nav-item">
+                        <a class="nav-link" href="./product_search.html">Search</a>
+                    </li>
+                </ul>
+            </div>
+        </div>
+    </nav>
+
     Hey from Northwind Product Details
+
+    <div id="testDiv"></div>
+
+    <div class="card text-bg-dark w-50 card-body mx-auto" id="card">
+        <h5 class="card-title text-center" id="cardTitle"></h5>
+        <div>
+            <ul class="list-group list-group-flush">
+                <!-- list-group-item-secondary is just sets the background color to gray (grey?) -->
+                <li class="list-group-item list-group-item-secondary" id="productIdSection"></li>
+                <li class="list-group-item list-group-item-secondary" id="productNameSection"></li>
+                <li class="list-group-item list-group-item-secondary" id="unitPriceSection"></li>
+                <li class="list-group-item list-group-item-secondary" id="unitsInStockSection"></li>
+                <li class="list-group-item list-group-item-secondary" id="categoryIdSection"></li>
+                <li class="list-group-item list-group-item-secondary" id="supplierSection"></li>
+                <li class="list-group-item list-group-item-secondary" id="discontinuedSection"></li>
+                </li>
+            </ul>
+
+        </div>
+
+    </div>
 
     <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/js/bootstrap.bundle.min.js"
         integrity="sha384-YvpcrYf0tY3lHB60NNkmXc5s9fDVZLESaAA55NDzOxhy9GkcIdslK1eN7N6jIeHz"
