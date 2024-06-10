@@ -3,20 +3,34 @@
 window.onload = () => {
     const tbody = document.querySelector("#productTableBody");
     const theDropdown = document.querySelector("#productSearchDDL");
+    const theOtherDropdown = document.querySelector("#categoryDDL");
 
-    theDropdown.addEventListener("change", (event) => generateTableBody(event, tbody, "http://localhost:8081/api/products"));
+    // this populates categoryDDL, only needs to run once
+    displayCategories();
+
+    theDropdown.addEventListener("change", (event) => generateTableBody(event, tbody));
+    theOtherDropdown.addEventListener("change", (event) => generateTableBody(event, tbody));
 }
 
-async function generateTableBody(event, tbody, url) {
+async function generateTableBody(event, tbody) {
     try {
-        let response = await fetch(url, {});
-        let data = await response.json();
-        let dropdown = event.target;
+        const dropdown = event.target;
+        const dropdownLength = dropdown.length;
+        const dropdownValue = dropdown.value;
 
-        if (dropdown.value) {
+        if (dropdownValue) {
+            // has to be let since it might change later
+            let url = "http://localhost:8081/api/products/";
+
+            // this would only run when the categoryDDL is passed in, since only that has more than 3 options
+            if (dropdownLength > 3) {
+                url += `bycategory/${dropdownValue}`;
+            }
+
+            const response = await fetch(url, {});
+            const data = await response.json();
+
             displayProducts(tbody, data);
-        } else {
-            document.querySelector("#productTable").classList.add("d-none");
         }
     } catch (error) {
         console.log(error);
@@ -30,8 +44,32 @@ function displayProducts(tbody, products) {
         createCell(newRow, product, "productId");
         createCell(newRow, product, "productName");
         createCell(newRow, product, "unitPrice");
+        createHyperlink(newRow, product);
     });
-    document.querySelector("#productTable").classList.remove("d-none");
+}
+
+async function displayCategories() {
+    try {
+        const dropdown = document.querySelector("#categoryDDL");
+        const response = await fetch("http://localhost:8081/api/categories", {});
+        const data = await response.json();
+
+        const defaultOption = document.createElement("option");
+        defaultOption.value = "";
+        defaultOption.textContent = "-- Select a Category --";
+
+        dropdown.appendChild(defaultOption);
+
+        data.forEach((category) => {
+            let newOption = document.createElement("option");
+            newOption.value = category.categoryId;
+            newOption.textContent = `${category.name}`;
+
+            dropdown.appendChild(newOption);
+        });
+    } catch (error) {
+        console.log(error);
+    }
 }
 
 function createCell(row, product, key) {
@@ -39,7 +77,7 @@ function createCell(row, product, key) {
     const productProperty = product[`${key}`];
 
     if (key === "unitPrice") {
-        newCell.innerHTML = Number(productProperty).toFixed(2);
+        newCell.innerHTML = `$${Number(productProperty).toFixed(2)}`;
     } else {
         newCell.innerHTML = productProperty;
     }
@@ -47,5 +85,5 @@ function createCell(row, product, key) {
 
 function createHyperlink(row, product) {
     const newCell = row.insertCell();
-    newCell.innerHTML = `<a href="http://localhost:8081/api/products/"`
+    newCell.innerHTML = `<a href="./product_details.html?productId=${product.productId}">Show Details</a>`;
 }
