@@ -57,16 +57,19 @@ async function displayCategories() {
         const response = await fetch("http://localhost:8081/api/categories", {});
         const data = await response.json();
 
+        const icons = ["🍺", "🧂", "🍰", "🐮", "🥖", "🥩", "🥦", "🦞"];
+
         const defaultOption = document.createElement("option");
         defaultOption.value = "";
         defaultOption.textContent = "-- Select a Category --";
 
         dropdown.appendChild(defaultOption);
 
-        data.forEach((category) => {
+        // used idx to leverage the looping to apply the correct emoji
+        data.forEach((category, idx) => {
             let newOption = document.createElement("option");
             newOption.value = category.categoryId;
-            newOption.textContent = `${category.name}`;
+            newOption.textContent = `${icons[idx]} ${category.name}`;
 
             dropdown.appendChild(newOption);
         });
@@ -92,37 +95,47 @@ function createHyperlink(row, product) {
 }
 
 function hideAndSeek(dropdown, length, value) {
+    const table = document.querySelector("#productTable");
+    let categoryDDL;
+
+    // logic to try to reduce dom calls by passing in a dropdown
+    if (length > 3) {
+        categoryDDL = dropdown;
+    } else {
+        categoryDDL = document.querySelector("#categoryDDL");
+    }
+
     // if value exists (i.e, not "")...
     if (value) {
         // QUESTION: is .classList.add("d-none") or .style.display = "none" better?
 
         // if the dropdown is categoryDDL
         if (length > 3) {
-            document.querySelector("#productTable").classList.remove("d-none");
+            table.classList.remove("d-none");
 
             // if the dropdown is productSearchDDL
         } else {
             switch (value) {
                 case "all":
-                    document.querySelector("#categoryDDL").classList.add("d-none");
-                    document.querySelector("#productTable").classList.remove("d-none");
+                    categoryDDL.classList.add("d-none");
+                    table.classList.remove("d-none");
                     break;
                 case "category":
-                    document.querySelector("#productTable").classList.add("d-none");
+                    table.classList.add("d-none");
 
                     // when I show the categoryDDL again, don't remember the previously selected option
-                    document.querySelector("#categoryDDL").selectedIndex = 0;
-                    document.querySelector("#categoryDDL").classList.remove("d-none");
+                    categoryDDL.selectedIndex = 0;
+                    categoryDDL.classList.remove("d-none");
                     break;
             }
         }
     } else {
         // if dropdown.value === "", ALWAYS HIDE THE TABLE
-        document.querySelector("#productTable").classList.add("d-none");
+        table.classList.add("d-none");
 
         // ONLY if the productSearchDDL value is "", ALSO hide the categoryDDL
         if (length <= 3) {
-            document.querySelector("#categoryDDL").classList.add("d-none");
+            categoryDDL.classList.add("d-none");
         }
     }
 }
