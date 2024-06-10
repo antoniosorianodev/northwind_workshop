@@ -30,6 +30,10 @@ async function generateTableBody(event, tbody) {
             const response = await fetch(url, {});
             const data = await response.json();
 
+            // real funny guys, making me have to dig through documentation
+            // for sorting special characters
+            data.sort((a, b) => a.productName.localeCompare(b.productName));
+
             displayProducts(tbody, data);
         }
 
